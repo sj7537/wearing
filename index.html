@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>이거 입어! · 3초 컷 코디 처방전</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  :root {
+    --bg: #F8F9FA;
+    --card: #FFFFFF;
+    --navy: #1E293B;
+    --navy-2: #334155;
+    --blue: #2563EB;
+    --blue-soft: #DBEAFE;
+    --sky: #EFF6FF;
+    --sky-2: #BFDBFE;
+    --line: #E2E8F0;
+    --muted: #64748B;
+    --pink: #F43F5E;
+    --pink-soft: #FFE4E6;
+    --radius-lg: 28px;
+    --radius-md: 18px;
+    --radius-sm: 999px;
+    --shadow: 0 10px 30px -12px rgba(30, 41, 59, 0.18);
+    --ease: cubic-bezier(.2, .8, .2, 1);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--navy);
+    font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    letter-spacing: -0.01em;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+  }
+  button { font-family: inherit; color: inherit; }
+
+  .app {
+    width: 100%;
+    max-width: 430px;
+    min-height: 100vh;
+    padding: 20px 18px 120px;
+    position: relative;
+  }
+
+  /* ---------- Header ---------- */
+  .brand { display: flex; align-items: flex-end; justify-content: space-between; margin: 8px 4px 18px; }
+  .brand h1 { margin: 0; font-size: 30px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+  .brand h1 .bang { color: var(--blue); }
+  .brand p { margin: 6px 0 0; font-size: 13px; color: var(--muted); font-weight: 500; }
+  .rx-badge {
+    width: 46px; height: 46px; border-radius: 14px;
+    background: var(--navy); color: #fff;
+    display: grid; place-items: center;
+    font-size: 20px; font-weight: 800; font-style: italic;
+    transform: rotate(-6deg);
+    box-shadow: var(--shadow);
+  }
+
+  /* ---------- Tabs ---------- */
+  .tabs {
+    position: relative;
+    display: grid; grid-template-columns: 1fr 1fr;
+    background: #E9EEF5;
+    padding: 5px; border-radius: 18px;
+    margin-bottom: 18px;
+  }
+  .tab-indicator {
+    position: absolute; top: 5px; left: 5px;
+    width: calc(50% - 5px); height: calc(100% - 10px);
+    background: var(--card); border-radius: 14px;
+    box-shadow: 0 4px 14px -6px rgba(30,41,59,.25);
+    transition: transform .4s var(--ease);
+  }
+  .tabs[data-active="1"] .tab-indicator { transform: translateX(100%); }
+  .tab-btn {
+    position: relative; z-index: 1;
+    border: 0; background: transparent;
+    padding: 13px 6px; font-size: 14.5px; font-weight: 700;
+    color: var(--muted); cursor: pointer;
+    transition: color .3s;
+  }
+  .tab-btn.active { color: var(--navy); }
+
+  /* ---------- Panels ---------- */
+  .panel { display: none; }
+  .panel.active { display: block; animation: panelIn .45s var(--ease); }
+  @keyframes panelIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 22px 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 14px;
+  }
+
+  .step-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .step-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--sky); color: var(--blue);
+    font-size: 12px; font-weight: 800;
+    display: grid; place-items: center; flex-shrink: 0;
+    transition: background .3s, color .3s;
+  }
+  .step.done .step-num { background: var(--blue); color: #fff; }
+  .step-title { font-size: 16px; font-weight: 800; }
+  .step + .step { margin-top: 24px; padding-top: 22px; border-top: 1px dashed var(--line); }
+
+  .auto-detect {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12.5px; font-weight: 600; color: var(--blue);
+    background: var(--sky); padding: 7px 12px; border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+  }
+  .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--blue); position: relative; }
+  .pulse::after {
+    content: ""; position: absolute; inset: -4px; border-radius: 50%;
+    border: 2px solid var(--blue); opacity: .5;
+    animation: pulse 1.6s ease-out infinite;
+  }
+  @keyframes pulse { from { transform: scale(.6); opacity: .7; } to { transform: scale(1.6); opacity: 0; } }
+
+  /* ---------- Chips ---------- */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips.grid-2 { display: grid; grid-template-columns: 1fr 1fr; }
+  .chip {
+    border: 1.5px solid var(--line);
+    background: #fff;
+    padding: 12px 14px;
+    border-radius: 16px;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; text-align: left;
+    line-height: 1.3;
+    transition: border-color .2s, background .2s, color .2s, transform .15s var(--ease);
+  }
+  .chip small { display: block; font-size: 11.5px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+  .chip:active { transform: scale(.96); }
+  .chip:hover { border-color: var(--sky-2); }
+  .chip.selected {
+    border-color: var(--navy); background: var(--navy); color: #fff;
+  }
+  .chip.selected small { color: #CBD5E1; }
+  .chip:focus-visible, .tab-btn:focus-visible, .cta:focus-visible, .ghost-btn:focus-visible, .shop-btn:focus-visible {
+    outline: 3px solid var(--sky-2); outline-offset: 2px;
+  }
+  .chip.wide { flex: 1 1 100%; }
+
+  .date-input {
+    display: none; margin-top: 10px; width: 100%;
+    padding: 12px 14px; border-radius: 14px;
+    border: 1.5px solid var(--navy); font: inherit; font-size: 15px; color: var(--navy);
+    background: var(--sky);
+  }
+  .date-input.show { display: block; animation: panelIn .3s var(--ease); }
+
+  /* ---------- CTA ---------- */
+  .cta {
+    width: 100%; border: 0; cursor: pointer;
+    background: var(--navy); color: #fff;
+    padding: 19px; border-radius: 20px;
+    font-size: 17px; font-weight: 800;
+    box-shadow: 0 14px 28px -12px rgba(30,41,59,.55);
+    transition: transform .15s var(--ease), opacity .2s, background .2s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .cta:active { transform: scale(.98); }
+  .cta[disabled] { opacity: .35; cursor: not-allowed; box-shadow: none; }
+  .cta.pink { background: linear-gradient(135deg, #1E293B, #3B4F7A); }
+  .cta-hint { text-align: center; font-size: 12.5px; color: var(--muted); margin: 10px 0 0; min-height: 16px; }
+  .spinner {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2.5px solid rgba(255,255,255,.3); border-top-color: #fff;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- Prescription result (the signature element) ---------- */
+  .result { margin-top: 22px; }
+  .rx {
+    position: relative;
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    animation: rxIn .6s var(--ease);
+  }
+  @keyframes rxIn {
+    from { opacity: 0; transform: translateY(24px) scale(.97); clip-path: inset(0 0 60% 0 round 22px); }
+    to { opacity: 1; transform: none; clip-path: inset(0 0 0 0 round 22px); }
+  }
+  .rx.swap { animation: rxSwap .5s var(--ease); }
+  @keyframes rxSwap {
+    0% { transform: rotateX(0); } 45% { transform: rotateX(80deg); opacity: .4; }
+    55% { transform: rotateX(-80deg); opacity: .4; } 100% { transform: rotateX(0); opacity: 1; }
+  }
+  .rx-top {
+    background: var(--navy); color: #fff;
+    padding: 20px 20px 26px; position: relative;
+  }
+  .rx-top::after {
+    /* perforated tear line */
+    content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 16px;
+    background: radial-gradient(circle at 8px 8px, #fff 6px, transparent 6.5px) repeat-x;
+    background-size: 16px 16px;
+  }
+  .rx-meta { display: flex; justify-content: space-between; font-size: 11.5px; color: #94A3B8; font-weight: 600; }
+  .rx-title { font-size: 21px; font-weight: 800; line-height: 1.35; margin: 12px 0 10px; letter-spacing: -0.03em; }
+  .rx-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .rx-tag { font-size: 11.5px; font-weight: 700; padding: 5px 10px; border-radius: var(--radius-sm); background: rgba(255,255,255,.12); color: #E2E8F0; }
+  .rx-body { padding: 26px 20px 20px; position: relative; }
+  .rx-stamp {
+    position: absolute; right: 16px; top: 18px;
+    width: 76px; height: 76px; border-radius: 50%;
+    border: 2.5px solid var(--blue); color: var(--blue);
+    display: grid; place-items: center; text-align: center;
+    font-size: 11px; font-weight: 800; line-height: 1.2;
+    transform: rotate(-14deg); opacity: .85;
+    animation: stamp .45s .35s var(--ease) both;
+  }
+  @keyframes stamp { from { transform: rotate(-14deg) scale(2.2); opacity: 0; } to { transform: rotate(-14deg) scale(1); opacity: .85; } }
+  .rx-section-label { font-size: 13px; font-weight: 800; color: var(--muted); margin-bottom: 12px; }
+
+  .formula { list-style: none; margin: 0; padding: 0; }
+  .formula li {
+    display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 10px;
+    padding: 11px 0; border-bottom: 1px solid #F1F5F9;
+    opacity: 0; animation: lineIn .4s var(--ease) forwards;
+  }
+  .formula li:last-child { border-bottom: 0; }
+  .formula li:nth-child(1) { animation-delay: .15s; }
+  .formula li:nth-child(2) { animation-delay: .22s; }
+  .formula li:nth-child(3) { animation-delay: .29s; }
+  .formula li:nth-child(4) { animation-delay: .36s; }
+  .formula li:nth-child(5) { animation-delay: .43s; }
+  @keyframes lineIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+  .part {
+    font-size: 12px; font-weight: 700; color: var(--blue);
+    background: var(--sky); border-radius: 10px; padding: 6px 0; text-align: center;
+  }
+  .item { font-size: 15px; font-weight: 600; line-height: 1.4; }
+  .item.none { color: var(--muted); font-weight: 500; }
+
+  .equation {
+    margin: 14px 0 0; padding: 12px 14px;
+    background: #F8FAFC; border-radius: 14px;
+    font-size: 13px; line-height: 1.6; color: var(--navy-2); font-weight: 500;
+  }
+  .tip {
+    display: flex; gap: 10px; align-items: flex-start;
+    margin-top: 12px; padding: 14px; border-radius: 14px;
+    background: var(--sky); font-size: 14px; line-height: 1.55; font-weight: 500;
+  }
+  .tip b { display: block; font-size: 12.5px; color: var(--blue); margin-bottom: 2px; }
+  .tip .ico { font-size: 18px; line-height: 1.3; }
+  .tip.soft { background: #F8FAFC; }
+
+  .rx-actions { display: grid; gap: 8px; padding: 0 20px 20px; }
+  .ghost-btn {
+    border: 1.5px solid var(--line); background: #fff; cursor: pointer;
+    padding: 14px; border-radius: 16px; font-size: 14.5px; font-weight: 700;
+    transition: background .2s, transform .15s var(--ease), border-color .2s;
+  }
+  .ghost-btn:hover { background: #F8FAFC; border-color: var(--sky-2); }
+  .ghost-btn:active { transform: scale(.98); }
+  .ghost-btn.primary { background: var(--sky); border-color: var(--sky); color: var(--navy); }
+
+  /* ---------- Forecast ---------- */
+  .forecast {
+    display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center;
+    padding: 16px; border-radius: 18px; background: linear-gradient(135deg, #EFF6FF, #DBEAFE);
+    margin-bottom: 18px;
+  }
+  .fc-icon { font-size: 40px; line-height: 1; }
+  .fc-temp { font-size: 30px; font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+  .fc-temp span { font-size: 13px; font-weight: 600; color: var(--muted); margin-left: 6px; letter-spacing: 0; }
+  .fc-msg { font-size: 13.5px; line-height: 1.5; margin-top: 6px; font-weight: 500; color: var(--navy-2); }
+
+  /* ---------- Shopping ---------- */
+  .shop { padding: 20px; border-top: 8px solid #F1F5F9; }
+  .shop h3 { margin: 0 0 4px; font-size: 16px; font-weight: 800; }
+  .shop .sub { margin: 0 0 14px; font-size: 12.5px; color: var(--muted); }
+  .shop-list { display: grid; gap: 10px; }
+  .shop-card {
+    display: grid; grid-template-columns: 64px 1fr; gap: 12px;
+    padding: 12px; border: 1.5px solid var(--line); border-radius: 18px;
+    opacity: 0; animation: lineIn .4s var(--ease) forwards;
+  }
+  .shop-card:nth-child(1) { animation-delay: .2s; }
+  .shop-card:nth-child(2) { animation-delay: .3s; }
+  .shop-card:nth-child(3) { animation-delay: .4s; }
+  .thumb {
+    width: 64px; height: 64px; border-radius: 14px;
+    display: grid; place-items: center; font-size: 30px;
+    background: var(--sky);
+  }
+  .shop-name { font-size: 14.5px; font-weight: 800; }
+  .shop-why { font-size: 12.5px; color: var(--muted); margin: 3px 0 6px; line-height: 1.45; }
+  .shop-price { font-size: 13px; font-weight: 800; color: var(--blue); }
+  .shop-btn {
+    grid-column: 1 / -1;
+    border: 0; cursor: pointer; margin-top: 2px;
+    background: var(--navy); color: #fff;
+    padding: 11px; border-radius: 12px; font-size: 13px; font-weight: 700;
+    transition: transform .15s var(--ease), background .2s;
+  }
+  .shop-btn:hover { background: var(--navy-2); }
+  .shop-btn:active { transform: scale(.98); }
+
+  /* ---------- Toast & Modal ---------- */
+  .toast {
+    position: fixed; left: 50%; bottom: 28px;
+    transform: translate(-50%, 30px); opacity: 0;
+    background: var(--navy); color: #fff;
+    padding: 13px 20px; border-radius: 999px;
+    font-size: 14px; font-weight: 600; white-space: nowrap;
+    box-shadow: 0 12px 30px -10px rgba(0,0,0,.4);
+    transition: transform .35s var(--ease), opacity .35s;
+    pointer-events: none; z-index: 50;
+  }
+  .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, .45);
+    display: flex; align-items: flex-end; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 40;
+  }
+  .modal-bg.show { opacity: 1; pointer-events: auto; }
+  .sheet {
+    width: 100%; max-width: 430px; background: #fff;
+    border-radius: 28px 28px 0 0; padding: 12px 22px 28px;
+    transform: translateY(100%); transition: transform .4s var(--ease);
+  }
+  .modal-bg.show .sheet { transform: none; }
+  .grabber { width: 40px; height: 5px; border-radius: 9px; background: var(--line); margin: 0 auto 18px; }
+  .sheet h4 { margin: 0 0 6px; font-size: 18px; font-weight: 800; }
+  .sheet p { margin: 0 0 18px; font-size: 14px; color: var(--muted); line-height: 1.55; }
+  .mall-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .mall {
+    border: 1.5px solid var(--line); background: #fff; border-radius: 16px; padding: 14px;
+    cursor: pointer; font-weight: 800; font-size: 14.5px;
+    transition: border-color .2s, background .2s;
+  }
+  .mall span { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-top: 3px; }
+  .mall:hover { border-color: var(--navy); background: #F8FAFC; }
+
+  .footer-note { text-align: center; font-size: 11.5px; color: #94A3B8; margin-top: 26px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; }
+    .formula li, .shop-card { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="brand">
+    <div>
+      <h1>이거 입어<span class="bang">!</span></h1>
+      <p>고민은 3초면 충분해요. 코디 처방전</p>
+    </div>
+    <div class="rx-badge" aria-hidden="true">Rx</div>
+  </header>
+
+  <nav class="tabs" data-active="0" role="tablist">
+    <div class="tab-indicator"></div>
+    <button class="tab-btn active" role="tab" data-tab="0">☀️ 오늘 당장 뭐 입지?</button>
+    <button class="tab-btn" role="tab" data-tab="1">💘 D-Day 코디 준비</button>
+  </nav>
+
+  <!-- ================= TAB 1 ================= -->
+  <section class="panel active" id="panel-0">
+    <div class="card">
+      <div class="step done" data-step="weather">
+        <div class="step-head"><div class="step-num">1</div><div class="step-title">오늘 날씨</div></div>
+        <div class="auto-detect"><span class="pulse"></span>현재 서울의 날씨 자동 감지됨</div>
+        <div class="chips grid-2" data-group="weather">
+          <button class="chip" data-value="hot">☀️ 24°C<small>더움</small></button>
+          <button class="chip" data-value="mild">🌤️ 19°C<small>선선함</small></button>
+          <button class="chip selected" data-value="cross">🍂 13°C<small>일교차 큼</small></button>
+          <button class="chip" data-value="cold">❄️ 4°C<small>추움</small></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="schedule">
+        <div class="step-head"><div class="step-num">2</div><div class="step-title">오늘의 일정</div></div>
+        <div class="chips grid-2" data-group="schedule">
+          <button class="chip" data-value="home">🛋️ 집콕/편한 약속</button>
+          <button class="chip" data-value="school">🎒 학교/강의실</button>
+          <button class="chip" data-value="meet">💼 중요한 발표/미팅</button>
+          <button class="chip" data-value="date">💑 데이트</button>
+        </div>
+      </div>
+
+      <div class="step" data-step="mood">
+        <div class="step-head"><div class="step-num">3</div><div class="step-title">오늘의 귀찮음 지수</div></div>
+        <div class="chips" data-group="mood">
+          <button class="chip wide" data-value="0">😪 만사 귀찮음<small>최대한 편하게</small></button>
+          <button class="chip wide" data-value="1">🙂 기분 전환<small>조금 신경 씀</small></button>
+          <button class="chip wide" data-value="2">✨ 오늘은 완전 꾸꾸꾸<small>예쁘게 입을래요</small></button>
+        </div>
+      </div>
+    </div>
+
+    <button class="cta" id="btn-today" disabled>오늘의 착장 처방받기</button>
+    <p class="cta-hint" id="hint-today">일정과 귀찮음 지수를 골라주세요</p>
+
+    <div class="result" id="result-today"></div>
+  </section>
+
+  <!-- ================= TAB 2 ================= -->
+  <section class="panel" id="panel-1">
+    <div class="card">
+      <div class="step" data-step="when">
+        <div class="step-head"><div class="step-num">1</div><div class="step-title">언제 만나나요?</div></div>
+        <div class="chips" data-group="when" id="when-chips"></div>
+        <input type="date" class="date-input" id="custom-date" aria-label="날짜 직접 선택" />
+      </div>
+
+      <div class="step" data-step="situation">
+        <div class="step-head"><div class="step-num">2</div><div class="step-title">어떤 자리인가요?</div></div>
+        <div class="chips" data-group="situation">
+          <button class="chip" data-value="date">💑 데이트</button>
+          <button class="chip" data-value="blind">🌷 소개팅</button>
+          <button class="chip" data-value="interview">👔 면접</button>
+          <button class="chip" data-value="wedding">💐 결혼식 하객</button>
+          <button class="chip" data-value="travel">🧳 여행</button>
+        </div>
+      </div>
+
+      <div class="step" data-step="activity">
+        <div class="step-head"><div class="step-num">3</div><div class="step-title">주로 어디서 보내나요?</div></div>
+        <div class="chips" data-group="activity">
+          <button class="chip" data-value="in">🏛️ 실내 위주</button>
+          <button class="chip" data-value="out">🌳 야외 위주</button>
+          <button class="chip" data-value="mix">🔀 반반</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="cta pink" id="btn-dday" disabled>그날 예보 분석 & 코디 추천받기</button>
+    <p class="cta-hint" id="hint-dday">날짜, 자리, 활동을 골라주세요</p>
+
+    <div class="result" id="result-dday"></div>
+  </section>
+
+  <p class="footer-note">프로토타입 · 날씨와 쇼핑 연결은 시뮬레이션이에요</p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-bg" id="modal">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="grabber"></div>
+    <h4 id="sheet-title">최저가 찾아볼게요</h4>
+    <p id="sheet-desc"></p>
+    <div class="mall-row">
+      <button class="mall" data-mall="무신사">무신사<span>캐주얼·베이직</span></button>
+      <button class="mall" data-mall="지그재그">지그재그<span>트렌디·데일리</span></button>
+    </div>
+    <button class="ghost-btn" style="width:100%" id="sheet-close">닫기</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   DATA · 탭 1: 날씨 × 일정 → 코디 4개 (m = 어울리는 귀찮음 지수)
+   0 = 만사 귀찮음, 1 = 기분 전환, 2 = 꾸꾸꾸
+   ========================================================= */
+const O = (t, b, o, s, a, m) => ({ t, b, o, s, a, m });
+const NO = "없음 (생략 OK)";
+
+const WARDROBE = {
+  hot: {
+    home: [
+      O("오버핏 무지 반팔 티", "와이드 트레이닝 쇼츠", NO, "슬리퍼", "볼캡", "0"),
+      O("루즈핏 피그먼트 반팔 티", "린넨 밴딩 팬츠", NO, "크록스", "에코백", "01"),
+      O("스트라이프 반팔 티", "베이지 버뮤다 쇼츠", NO, "화이트 캔버스 스니커즈", "버킷햇", "12"),
+      O("반팔 니트 폴로", "크림 와이드 치노", NO, "로퍼", "얇은 실버 목걸이", "2"),
+    ],
+    school: [
+      O("오버핏 그래픽 반팔 티", "블랙 나일론 밴딩 팬츠", NO, "운동화", "백팩", "0"),
+      O("화이트 무지 반팔 티", "연청 와이드 데님", "얇은 린넨 셔츠 (강의실 에어컨 대비)", "흰색 스니커즈", "", "01"),
+      O("스트라이프 반팔 셔츠", "화이트 와이드 팬츠", NO, "그레이 러닝화", "캔버스 토트백", "12"),
+      O("반팔 니트", "연청 스트레이트 데님 or 데님 롱스커트", "얇은 썸머 가디건", "로퍼 or 메리제인", "미니 숄더백", "2"),
+    ],
+    meet: [
+      O("화이트 피케 카라 티", "블랙 밴딩 슬랙스", NO, "블랙 스니커즈", "", "0"),
+      O("하늘색 반팔 셔츠", "네이비 슬랙스", NO, "블랙 로퍼", "", "01"),
+      O("화이트 옥스포드 셔츠 (소매 롤업)", "베이지 와이드 슬랙스", "린넨 블레이저 (실내 냉방 대비)", "브라운 로퍼", "가죽 스트랩 시계", "12"),
+      O("네이비 반팔 니트", "그레이 세미와이드 슬랙스", "라이트 그레이 썸머 블레이저", "블랙 더비 슈즈", "레더 토트백", "2"),
+    ],
+    date: [
+      O("깨끗한 화이트 반팔 티", "연청 데님 쇼츠", NO, "화이트 스니커즈", "볼캡", "0"),
+      O("린넨 셔츠 (단추 하나 오픈)", "크림 치노 팬츠", NO, "가죽 샌들", "", "01"),
+      O("하늘색 스트라이프 셔츠", "화이트 와이드 데님", NO, "로퍼", "실버 링", "12"),
+      O("블랙 반팔 니트", "아이보리 와이드 슬랙스 or 플리츠 스커트", NO, "스트랩 샌들", "은은한 향수 한 방울", "2"),
+    ],
+  },
+  mild: {
+    home: [
+      O("그레이 후드티", "조거 팬츠", NO, "슬리퍼 + 양말", "", "0"),
+      O("긴팔 무지 티", "와이드 트레이닝 팬츠", "후드 집업", "운동화", "", "01"),
+      O("스트라이프 긴팔 티", "연청 스트레이트 데님", NO, "캔버스 스니커즈", "에코백", "12"),
+      O("크림 맨투맨", "브라운 코듀로이 팬츠", NO, "그레이 러닝화", "볼캡", "2"),
+    ],
+    school: [
+      O("오버핏 맨투맨", "흑청 데님", NO, "운동화", "백팩", "0"),
+      O("화이트 긴팔 티", "연청 와이드 데님", "네이비 가디건", "흰색 스니커즈", "", "01"),
+      O("화이트 티 + 블루 옥스포드 셔츠 (오픈)", "베이지 치노 팬츠", "셔츠가 아우터 역할", "캔버스 스니커즈", "캔버스 토트백", "12"),
+      O("셔츠 + 니트 조끼 레이어드", "그레이 와이드 슬랙스", "데님 재킷", "로퍼", "", "2"),
+    ],
+    meet: [
+      O("무지 긴팔 니트", "블랙 슬랙스", NO, "블랙 스니커즈", "", "0"),
+      O("화이트 셔츠", "네이비 슬랙스", NO, "블랙 로퍼", "", "01"),
+      O("라이트 블루 셔츠", "차콜 슬랙스", "네이비 블레이저", "더비 슈즈", "가죽 시계", "12"),
+      O("화이트 셔츠", "그레이 셋업 수트 팬츠", "셋업 재킷", "블랙 로퍼", "가죽 벨트", "2"),
+    ],
+    date: [
+      O("깔끔한 화이트 맨투맨", "연청 데님", NO, "화이트 스니커즈", "", "0"),
+      O("하늘색 셔츠", "화이트 데님", NO, "로퍼", "", "01"),
+      O("화이트 무지 티", "연청 와이드 데님", "크림 니트 가디건", "화이트 스니커즈", "실버 링", "12"),
+      O("아이보리 니트", "블랙 슬랙스", "라이트 베이지 트렌치코트", "로퍼", "은은한 향수 한 방울", "2"),
+    ],
+  },
+  cross: {
+    home: [
+      O("기모 후드티", "조거 팬츠", "플리스 집업", "크록스 + 수면양말", "", "0"),
+      O("맨투맨", "와이드 트레이닝 팬츠", "바람막이", "운동화", "", "01"),
+      O("긴팔 무지 티", "흑청 데님", "그레이 후드 집업", "캔버스 스니커즈", "", "12"),
+      O("라운드 니트", "베이지 코듀로이 팬츠", "플리스 재킷", "러닝화", "비니", "2"),
+    ],
+    school: [
+      O("후드티", "트레이닝 팬츠", "바람막이", "운동화", "백팩", "0"),
+      O("화이트 무지 티셔츠", "연청 와이드 데님", "네이비 가디건", "흰색 스니커즈", "", "01"),
+      O("그레이 맨투맨", "베이지 치노 팬츠", "데님 재킷", "화이트 스니커즈", "", "12"),
+      O("셔츠 + 니트 조끼", "그레이 와이드 슬랙스", "베이지 트렌치코트", "로퍼", "미니 숄더백", "2"),
+    ],
+    meet: [
+      O("터틀넥 니트", "블랙 슬랙스", "블랙 가디건", "블랙 스니커즈", "", "0"),
+      O("화이트 셔츠", "네이비 슬랙스", "그레이 니트 가디건", "블랙 로퍼", "", "01"),
+      O("라이트 블루 셔츠", "차콜 슬랙스", "네이비 블레이저", "더비 슈즈", "가죽 시계", "12"),
+      O("화이트 셔츠", "그레이 셋업 수트", "베이지 트렌치코트", "블랙 로퍼", "레더 토트백", "2"),
+    ],
+    date: [
+      O("화이트 맨투맨", "연청 데님", "후드 집업", "화이트 스니커즈", "", "0"),
+      O("스트라이프 셔츠", "화이트 데님", "네이비 가디건", "로퍼", "", "01"),
+      O("크림 니트", "연청 와이드 데님", "데님 재킷", "화이트 스니커즈", "실버 목걸이", "12"),
+      O("화이트 셔츠", "블랙 슬랙스", "베이지 트렌치코트", "로퍼", "은은한 향수 한 방울", "2"),
+    ],
+  },
+  cold: {
+    home: [
+      O("기모 후드티", "기모 조거 팬츠", "롱패딩 (지퍼 끝까지)", "털 슬리퍼 or 어그", "", "0"),
+      O("기모 맨투맨", "기모 와이드 팬츠", "숏패딩", "운동화", "", "01"),
+      O("라운드 니트", "코듀로이 팬츠", "플리스 재킷", "러닝화", "비니", "12"),
+      O("터틀넥 니트", "흑청 데님", "숏패딩", "워커 부츠", "머플러", "2"),
+    ],
+    school: [
+      O("기모 후드티", "기모 트레이닝 팬츠", "롱패딩", "운동화", "백팩", "0"),
+      O("라운드 니트", "연청 데님", "숏패딩", "흰색 스니커즈", "머플러", "01"),
+      O("맨투맨 + 셔츠 레이어드", "브라운 코듀로이 팬츠", "더플코트", "스니커즈", "비니", "12"),
+      O("터틀넥 니트", "그레이 슬랙스", "울 롱코트", "첼시 부츠", "체크 머플러", "2"),
+    ],
+    meet: [
+      O("터틀넥 니트", "블랙 슬랙스", "블랙 숏패딩", "블랙 스니커즈", "", "0"),
+      O("셔츠 + 브이넥 니트", "네이비 슬랙스", "차콜 울 코트", "블랙 로퍼", "", "01"),
+      O("블랙 터틀넥", "그레이 슬랙스", "네이비 울 코트", "더비 슈즈", "가죽 장갑", "12"),
+      O("화이트 셔츠", "차콜 셋업 수트", "캐멀 롱코트", "첼시 부츠", "캐시미어 머플러", "2"),
+    ],
+    date: [
+      O("기모 맨투맨", "연청 데님", "숏패딩", "화이트 스니커즈", "", "0"),
+      O("라운드 니트", "흑청 데님", "숏패딩", "워커 부츠", "머플러", "01"),
+      O("크림 꽈배기 니트", "연청 데님", "더플코트", "화이트 스니커즈", "비니", "12"),
+      O("크림 터틀넥", "블랙 슬랙스", "캐멀 롱코트", "첼시 부츠", "체크 머플러", "2"),
+    ],
+  },
+};
+
+const WEATHER = {
+  hot:   { label: "☀️ 24°C 더움", word: "더위 탈출용", tips: [
+    "한낮은 덥지만 실내 냉방이 세요. 얇은 셔츠 하나 가방에 넣어두면 든든해요.",
+    "땀 자국이 잘 보이는 그레이보다 화이트·네이비가 안전해요.",
+    "통풍 잘 되는 린넨·면 소재를 고르면 체감 온도가 확 내려가요."] },
+  mild:  { label: "🌤️ 19°C 선선함", word: "선선한 날", tips: [
+    "긴팔 한 장으로 딱 좋은 날. 저녁엔 살짝 쌀쌀하니 얇은 겉옷 하나면 끝.",
+    "햇볕 아래선 덥고 그늘은 서늘해요. 벗기 쉬운 가디건·셔츠가 정답이에요.",
+    "니트는 얇은 게이지로. 두꺼우면 오후에 금방 더워져요."] },
+  cross: { label: "🍂 13°C 일교차 큼", word: "일교차 방어용", tips: [
+    "아침·저녁과 낮 기온 차가 10도 가까이 나요. 벗고 입기 쉬운 아우터가 필수!",
+    "얇은 옷을 여러 겹 겹쳐 입는 게 두꺼운 한 벌보다 따뜻하고 편해요.",
+    "해 지면 확 추워져요. 귀가 시간이 늦다면 아우터를 한 단계 두껍게."] },
+  cold:  { label: "❄️ 4°C 추움", word: "한파 대비", tips: [
+    "체감은 영하 근처예요. 목·손목·발목만 가려도 훨씬 덜 추워요.",
+    "히트텍 같은 발열 내의를 한 겹 깔면 코트도 패딩처럼 따뜻해져요.",
+    "실내외 온도 차가 커요. 안에는 너무 두꺼운 니트보다 중간 두께가 좋아요."] },
+};
+
+const SCHEDULE = {
+  home:   { label: "집콕/편한 약속", word: "동네 마실" },
+  school: { label: "학교/강의실", word: "캠퍼스" },
+  meet:   { label: "발표/미팅", word: "신뢰감 뿜뿜 발표" },
+  date:   { label: "데이트", word: "설렘 데이트" },
+};
+
+const MOOD = [
+  { label: "만사 귀찮음", word: "편안함 MAX", points: [
+    "생각 없이 손에 잡히는 순서대로 입어도 조합이 맞게 골랐어요.",
+    "단추·지퍼 최소화. 입고 나가는 데 1분이면 충분해요.",
+    "톤만 맞추면 대충 입어도 '꾸안꾸'로 보여요."] },
+  { label: "기분 전환", word: "꾸안꾸", points: [
+    "하나만 신경 쓰세요. 상의를 바지에 살짝 넣어 입는 앞 넣기면 충분해요.",
+    "소매를 두 번 롤업하면 같은 옷도 훨씬 정돈돼 보여요.",
+    "신발만 깨끗해도 전체 인상이 확 올라가요."] },
+  { label: "완전 꾸꾸꾸", word: "풀착장", points: [
+    "액세서리 하나로 마무리! 반지·목걸이·시계 중 딱 하나만 고르세요.",
+    "상·하의 톤을 맞추고 신발에서 포인트를 주면 완성도가 올라가요.",
+    "핏이 생명이에요. 바지 기장이 신발에 살짝 닿는 정도로 맞춰주세요."] },
+];
+
+/* =========================================================
+   DATA · 탭 2: 상황 × 기온대 → 코디 + 쇼핑 큐레이션
+   ========================================================= */
+const S = (n, why, price, emoji) => ({ n, why, price, emoji });
+
+const OCCASION = {
+  date: { label: "데이트", word: "실패 없는 데이트 룩", data: {
+    hot:   { f: ["린넨 셔츠", "크림 와이드 치노", NO, "스웨이드 로퍼", "얇은 실버 반지"], shop: [
+      S("화이트 린넨 셔츠", "통기성 좋고 단정해서 첫인상 점수가 높아요", "3~5만원대", "👔"),
+      S("크림 와이드 치노", "밝은 하의는 사진에서 화사하게 나와요", "4~6만원대", "👖"),
+      S("스웨이드 로퍼", "운동화보다 한 끗 신경 쓴 느낌을 줘요", "6~9만원대", "👞")] },
+    mild:  { f: ["화이트 무지 티", "연청 와이드 데님", "크림 니트 가디건", "화이트 레더 스니커즈", "실버 목걸이"], shop: [
+      S("크림 니트 가디건", "부드러운 소재가 다정한 인상을 만들어요", "4~7만원대", "🧶"),
+      S("연청 와이드 데님", "어디에나 어울리는 호감형 하의의 정석", "4~6만원대", "👖"),
+      S("화이트 레더 스니커즈", "캔버스보다 깔끔해서 데이트에 딱", "6~10만원대", "👟")] },
+    cross: { f: ["스트라이프 셔츠", "흑청 스트레이트 데님", "라이트 베이지 트렌치코트", "로퍼", "은은한 향수"], shop: [
+      S("라이트 트렌치코트", "일교차 방어와 분위기를 동시에 챙겨요", "9~15만원대", "🧥"),
+      S("블루 스트라이프 셔츠", "청량하고 깔끔한 인상의 치트키", "3~5만원대", "👔"),
+      S("블랙 로퍼", "데님에도 슬랙스에도 다 되는 만능템", "6~9만원대", "👞")] },
+    cold:  { f: ["크림 터틀넥", "블랙 슬랙스", "캐멀 울 코트", "첼시 부츠", "체크 머플러"], shop: [
+      S("캐멀 울 코트", "겨울 데이트 사진이 영화처럼 나와요", "15~25만원대", "🧥"),
+      S("체크 머플러", "얼굴 주변이 화사해지고 따뜻해요", "2~4만원대", "🧣"),
+      S("첼시 부츠", "다리가 길어 보이고 눈길에도 든든해요", "8~13만원대", "🥾")] },
+  }},
+  blind: { label: "소개팅", word: "호감 200% 소개팅 룩", data: {
+    hot:   { f: ["하늘색 옥스포드 셔츠", "베이지 슬랙스", NO, "로퍼", "가죽 스트랩 시계"], shop: [
+      S("하늘색 옥스포드 셔츠", "얼굴을 밝아 보이게 하는 최고의 컬러", "3~5만원대", "👔"),
+      S("베이지 와이드 슬랙스", "단정하지만 딱딱하지 않은 밸런스", "4~6만원대", "👖"),
+      S("가죽 스트랩 시계", "손목 하나로 신경 쓴 티가 나요", "5~10만원대", "⌚")] },
+    mild:  { f: ["아이보리 니트", "그레이 슬랙스", "네이비 블레이저", "로퍼", "얇은 실버 반지"], shop: [
+      S("아이보리 라운드 니트", "부드럽고 따뜻한 첫인상을 줘요", "4~7만원대", "🧶"),
+      S("네이비 블레이저", "격식과 편안함 사이의 정답", "8~14만원대", "🧥"),
+      S("그레이 슬랙스", "어떤 상의와도 무난하게 어울려요", "4~6만원대", "👖")] },
+    cross: { f: ["화이트 셔츠", "네이비 슬랙스", "베이지 트렌치코트", "더비 슈즈", "가죽 시계"], shop: [
+      S("베이지 트렌치코트", "가을 소개팅의 국룰, 분위기 담당", "9~15만원대", "🧥"),
+      S("오버핏 화이트 셔츠", "깔끔함의 기본기를 보여줘요", "3~5만원대", "👔"),
+      S("더비 슈즈", "로퍼보다 단단하고 신뢰감 있는 인상", "7~11만원대", "👞")] },
+    cold:  { f: ["캐시미어 터틀넥", "차콜 슬랙스", "네이비 울 롱코트", "첼시 부츠", "캐시미어 머플러"], shop: [
+      S("캐시미어 터틀넥", "포근한 질감이 대화를 편하게 만들어요", "6~12만원대", "🧶"),
+      S("네이비 울 롱코트", "블랙보다 부드럽고 세련돼 보여요", "15~25만원대", "🧥"),
+      S("캐시미어 머플러", "실내에서 벗어도 손에 들면 소품이 돼요", "3~6만원대", "🧣")] },
+  }},
+  interview: { label: "면접", word: "신뢰감 1순위 면접 룩", data: {
+    hot:   { f: ["화이트 셔츠 (반팔 X, 긴팔 추천)", "네이비 정장 팬츠", "네이비 정장 재킷 (이동 중엔 손에)", "블랙 구두", "심플한 가죽 시계"], shop: [
+      S("구김 적은 화이트 셔츠", "여름엔 기능성 소재로 땀 자국을 막아요", "3~5만원대", "👔"),
+      S("네이비 썸머 수트", "얇은 원단이라 대기 시간에도 덥지 않아요", "15~25만원대", "🕴️"),
+      S("블랙 플레인 구두", "광택 적당한 기본 구두가 가장 안전해요", "7~12만원대", "👞")] },
+    mild:  { f: ["화이트 셔츠", "차콜 정장 팬츠", "차콜 정장 재킷", "블랙 구두", "블랙 가죽 벨트"], shop: [
+      S("차콜 정장 셋업", "네이비 다음으로 신뢰감 있는 컬러", "15~25만원대", "🕴️"),
+      S("화이트 셔츠 2장", "면접 시즌엔 여벌이 꼭 필요해요", "3~5만원대", "👔"),
+      S("블랙 가죽 벨트", "구두와 색만 맞춰도 정돈돼 보여요", "2~4만원대", "🪢")] },
+    cross: { f: ["화이트 셔츠", "네이비 정장 팬츠", "네이비 정장 재킷 + 베이지 트렌치", "블랙 구두", "서류용 레더 백"], shop: [
+      S("베이지 트렌치코트", "정장 위에 걸쳐도 어색하지 않은 유일한 아우터", "9~15만원대", "🧥"),
+      S("네이비 정장 셋업", "면접관에게 가장 무난한 인상을 줘요", "15~25만원대", "🕴️"),
+      S("A4 레더 백", "서류 구김 걱정 없이 깔끔하게", "5~9만원대", "💼")] },
+    cold:  { f: ["화이트 셔츠", "차콜 정장 팬츠", "차콜 재킷 + 블랙 울 코트", "블랙 구두", "블랙 가죽 장갑"], shop: [
+      S("블랙 울 체스터코트", "정장 위 패딩은 NO, 코트가 정답", "13~22만원대", "🧥"),
+      S("발열 이너 티", "셔츠 안에 입어도 티 안 나는 보온템", "1~2만원대", "🔥"),
+      S("블랙 가죽 장갑", "대기 중 손 시림 방지 + 단정함", "2~5만원대", "🧤")] },
+  }},
+  wedding: { label: "결혼식 하객", word: "센스 있는 하객 룩", data: {
+    hot:   { f: ["하늘색 셔츠 or 블라우스", "베이지 셋업 팬츠 or 미디 스커트", "베이지 린넨 셋업 재킷", "로퍼 or 슬링백", "작은 미니백"], shop: [
+      S("베이지 린넨 셋업", "여름 하객 룩의 정석, 시원하고 격식 있어요", "10~18만원대", "🕴️"),
+      S("하늘색 셔츠 or 블라우스", "화이트는 신부와 겹치니 연한 블루로", "3~5만원대", "👔"),
+      S("미니 레더 백", "축의금 봉투와 폰만 쏙 들어가는 크기", "4~8만원대", "👜")] },
+    mild:  { f: ["네이비 니트 or 셔츠", "라이트 그레이 셋업 팬츠", "라이트 그레이 셋업 재킷", "로퍼", "얇은 시계 or 귀걸이"], shop: [
+      S("라이트 그레이 셋업", "밝지만 튀지 않는 하객 룩 컬러", "12~20만원대", "🕴️"),
+      S("네이비 얇은 니트", "셔츠 대신 입으면 부드러운 무드", "4~7만원대", "🧶"),
+      S("블랙 로퍼", "셋업에도 원피스에도 어울리는 만능템", "6~9만원대", "👞")] },
+    cross: { f: ["라이트 블루 셔츠", "네이비 셋업 팬츠", "네이비 셋업 재킷 + 트렌치", "더비 슈즈 or 펌프스", "미니백"], shop: [
+      S("네이비 셋업", "어느 식장에서도 실패 없는 컬러", "13~22만원대", "🕴️"),
+      S("베이지 트렌치코트", "식장 이동 중 일교차까지 커버", "9~15만원대", "🧥"),
+      S("더비 슈즈 or 펌프스", "오래 서 있어도 편한 굽 높이로", "7~11만원대", "👞")] },
+    cold:  { f: ["블랙 터틀넥", "차콜 셋업 팬츠", "차콜 셋업 재킷 + 캐멀 롱코트", "첼시 부츠 or 앵클부츠", "캐시미어 머플러"], shop: [
+      S("캐멀 롱코트", "겨울 식장 단체 사진에서 가장 우아한 아우터", "15~25만원대", "🧥"),
+      S("블랙 터틀넥", "셔츠 대신 입으면 따뜻하고 세련돼요", "4~7만원대", "🧶"),
+      S("앵클 부츠", "식장 계단·주차장에서도 편해요", "8~13만원대", "🥾")] },
+  }},
+  travel: { label: "여행", word: "편하고 사진 잘 나오는 여행 룩", data: {
+    hot:   { f: ["린넨 셔츠 (반팔 티 위에 오픈)", "나일론 와이드 쇼츠", NO, "쿠션 좋은 스포츠 샌들", "버킷햇 + 선글라스"], shop: [
+      S("스포츠 샌들", "하루 2만 보도 거뜬한 쿠션감", "5~9만원대", "🩴"),
+      S("버킷햇", "햇빛 차단 + 사진 포인트 동시 해결", "2~4만원대", "👒"),
+      S("나일론 쇼츠", "물에 젖어도 금방 마르는 여행 필수템", "3~5만원대", "🩳")] },
+    mild:  { f: ["긴팔 무지 티", "와이드 카고 팬츠", "가벼운 바람막이", "러닝화", "크로스백"], shop: [
+      S("경량 바람막이", "돌돌 말아 가방에 쏙, 날씨 변화 대비", "5~10만원대", "🧥"),
+      S("와이드 카고 팬츠", "주머니 많아 짐이 줄어요", "4~7만원대", "👖"),
+      S("나일론 크로스백", "양손 자유 + 소매치기 방지", "3~6만원대", "👝")] },
+    cross: { f: ["맨투맨", "연청 데님", "경량 패딩 조끼 or 재킷", "러닝화", "비니"], shop: [
+      S("경량 패딩", "아침 저녁 추위를 가볍게 방어", "6~12만원대", "🧥"),
+      S("편한 러닝화", "여행은 신발이 반이에요", "8~13만원대", "👟"),
+      S("니트 비니", "사진 포인트 + 머리 손질 생략 가능", "1~3만원대", "🧢")] },
+    cold:  { f: ["발열 이너 + 니트", "기모 데님", "롱패딩", "방한 부츠", "넥워머 + 장갑"], shop: [
+      S("방한 부츠", "눈길·빙판에서도 미끄럽지 않게", "8~15만원대", "🥾"),
+      S("발열 이너 세트", "여러 겹 대신 한 겹으로 해결", "2~4만원대", "🔥"),
+      S("넥워머", "목만 따뜻해도 체감 온도가 확 달라요", "1~3만원대", "🧣")] },
+  }},
+};
+
+const ACTIVITY = {
+  in:  { label: "실내 위주", tip: "실내는 난방·냉방이 강해요. 아우터는 벗기 쉬운 것으로, 안에 입는 옷에 더 신경 쓰세요." },
+  out: { label: "야외 위주", tip: "오래 걷게 될 거예요. 새 신발은 피하고, 바람을 막아줄 겉옷을 꼭 챙기세요." },
+  mix: { label: "실내외 반반", tip: "들락날락하니 레이어드가 답이에요. 입고 벗기 편한 앞트임 아우터를 추천해요." },
+};
+
+// 서울 월별 평년 기온 (대략)
+const SEOUL_AVG = [-2, 1, 6, 13, 18, 23, 26, 26, 22, 15, 7, 0];
+
+/* =========================================================
+   STATE & HELPERS
+   ========================================================= */
+const state = {
+  weather: "cross", schedule: null, mood: null,
+  when: null, situation: null, activity: null,
+  pick: 0,
+};
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const fmtDate = (d) => `${d.getMonth() + 1}월 ${d.getDate()}일 (${"일월화수목금토"[d.getDay()]})`;
+const startOfDay = (d) => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+const dDiff = (d) => Math.round((startOfDay(d) - startOfDay(new Date())) / 86400000);
+
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+/* ---------- Tabs ---------- */
+$$(".tab-btn").forEach((btn) => btn.addEventListener("click", () => {
+  const i = btn.dataset.tab;
+  $(".tabs").dataset.active = i;
+  $$(".tab-btn").forEach((b) => b.classList.toggle("active", b === btn));
+  $$(".panel").forEach((p) => p.classList.toggle("active", p.id === `panel-${i}`));
+}));
+
+/* ---------- Tab 2 date chips (오늘 기준 자동 계산) ---------- */
+(function buildWhenChips() {
+  const today = startOfDay(new Date());
+  const toSat = (6 - today.getDay() + 7) % 7 || 7;
+  const thisSat = new Date(today); thisSat.setDate(today.getDate() + toSat);
+  const nextSat = new Date(thisSat); nextSat.setDate(thisSat.getDate() + 7);
+  const opts = [
+    { v: thisSat.toISOString(), t: `이번 주 토요일 (D-${dDiff(thisSat)})`, s: fmtDate(thisSat) },
+    { v: nextSat.toISOString(), t: `다음 주 주말 (D-${dDiff(nextSat)})`, s: fmtDate(nextSat) },
+    { v: "custom", t: "🎉 기념일/특별한 날", s: "날짜 직접 고르기" },
+  ];
+  $("#when-chips").innerHTML = opts.map((o) =>
+    `<button class="chip" data-value="${o.v}">${o.t}<small>${o.s}</small></button>`).join("");
+  const input = $("#custom-date");
+  const min = new Date(today); min.setDate(min.getDate() + 1);
+  input.min = min.toISOString().slice(0, 10);
+  input.addEventListener("change", () => {
+    state.when = input.value ? new Date(input.value + "T00:00:00").toISOString() : null;
+    updateButtons();
+  });
+})();
+
+/* ---------- Chip selection (공통) ---------- */
+document.addEventListener("click", (e) => {
+  const chip = e.target.closest(".chip");
+  if (!chip) return;
+  const group = chip.parentElement.dataset.group;
+  $$(".chip", chip.parentElement).forEach((c) => c.classList.toggle("selected", c === chip));
+  const v = chip.dataset.value;
+
+  if (group === "when") {
+    const input = $("#custom-date");
+    if (v === "custom") {
+      input.classList.add("show");
+      state.when = input.value ? new Date(input.value + "T00:00:00").toISOString() : null;
+      if (!input.value) setTimeout(() => input.showPicker?.(), 50);
+    } else {
+      input.classList.remove("show");
+      state.when = v;
+    }
+  } else {
+    state[group] = group === "mood" ? Number(v) : v;
+  }
+  chip.closest(".step")?.classList.add("done");
+  updateButtons();
+});
+
+function updateButtons() {
+  const ok1 = state.weather && state.schedule && state.mood !== null;
+  $("#btn-today").disabled = !ok1;
+  $("#hint-today").textContent = ok1 ? "준비 완료! 눌러보세요" : "일정과 귀찮음 지수를 골라주세요";
+
+  const ok2 = state.when && state.situation && state.activity;
+  $("#btn-dday").disabled = !ok2;
+  $("#hint-dday").textContent = ok2 ? "그날 날씨까지 분석해 드릴게요" : "날짜, 자리, 활동을 골라주세요";
+}
+
+function withLoading(btn, label, fn) {
+  const original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner"></span>${label}`;
+  setTimeout(() => { btn.innerHTML = original; btn.disabled = false; fn(); }, 650);
+}
+
+/* =========================================================
+   TAB 1 · 오늘의 처방
+   ========================================================= */
+function todayPool() {
+  return WARDROBE[state.weather][state.schedule].filter((o) => o.m.includes(String(state.mood)));
+}
+
+function renderToday(isSwap) {
+  const pool = todayPool();
+  const outfit = pool[state.pick % pool.length];
+  const w = WEATHER[state.weather], sc = SCHEDULE[state.schedule], md = MOOD[state.mood];
+  const title = `${w.word} ${sc.word} ${md.word} 처방전`;
+  const no = String(Math.floor(Math.random() * 9000) + 1000);
+  const now = new Date();
+
+  const rows = [["상의", outfit.t], ["하의", outfit.b], ["아우터", outfit.o], ["신발", outfit.s]];
+  if (outfit.a) rows.push(["포인트", outfit.a]);
+
+  const eq = [outfit.t, outfit.b, outfit.o !== NO && outfit.o !== "셔츠가 아우터 역할" ? outfit.o : null, outfit.s]
+    .filter(Boolean).join(" + ");
+
+  state.lastToday = { title, rows, tip: rand(w.tips), point: rand(md.points), w, sc, md };
+
+  $("#result-today").innerHTML = `
+    <article class="rx ${isSwap ? "swap" : ""}">
+      <div class="rx-top">
+        <div class="rx-meta"><span>처방 No.${no}</span><span>${fmtDate(now)}</span></div>
+        <div class="rx-title">${title}</div>
+        <div class="rx-tags">
+          <span class="rx-tag">${w.label}</span><span class="rx-tag">${sc.label}</span><span class="rx-tag">${md.label}</span>
+        </div>
+      </div>
+      <div class="rx-body">
+        <div class="rx-stamp">이거<br>입어!<br>처방완료</div>
+        <div class="rx-section-label">추천 조합 공식</div>
+        <ul class="formula">
+          ${rows.map(([p, v]) => `<li><span class="part">${p}</span><span class="item ${v === NO ? "none" : ""}">${v}</span></li>`).join("")}
+        </ul>
+        <div class="equation">${eq}</div>
+        <div class="tip"><span class="ico">🌡️</span><div><b>날씨 맞춤 팁</b>${state.lastToday.tip}</div></div>
+        <div class="tip soft"><span class="ico">💡</span><div><b>스타일링 포인트</b>${state.lastToday.point}</div></div>
+      </div>
+      <div class="rx-actions">
+        <button class="ghost-btn primary" id="btn-reroll">🔄 다른 기본템 조합으로 돌리기</button>
+        <button class="ghost-btn" id="btn-share">📤 친구에게 처방전 공유하기</button>
+      </div>
+    </article>`;
+
+  $("#btn-reroll").onclick = () => {
+    const len = todayPool().length;
+    state.pick = (state.pick + 1) % len;
+    renderToday(true);
+    toast(`새 조합 처방 완료 (${state.pick + 1}/${len})`);
+  };
+  $("#btn-share").onclick = () => {
+    const r = state.lastToday;
+    const text = `💊 [이거 입어!] ${r.title}\n\n` +
+      r.rows.map(([p, v]) => `· ${p}: ${v}`).join("\n") +
+      `\n\n🌡️ ${r.tip}\n\n오늘 뭐 입지? 3초면 끝 👉 이거 입어!`;
+    copyText(text).then(() => toast("📋 처방전이 복사됐어요! 친구에게 붙여넣기 하세요"));
+  };
+}
+
+$("#btn-today").addEventListener("click", (e) => {
+  state.pick = Math.floor(Math.random() * todayPool().length);
+  withLoading(e.currentTarget, "처방전 작성 중...", () => {
+    renderToday(false);
+    $("#result-today").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
+
+/* =========================================================
+   TAB 2 · D-Day 예보 & 코디
+   ========================================================= */
+function forecastFor(date) {
+  // 날짜를 시드로 쓰는 의사 난수 → 같은 날짜는 항상 같은 예보
+  const seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
+  const r = (n) => { const x = Math.sin(seed * (n + 1)) * 10000; return x - Math.floor(x); };
+  const temp = Math.round(SEOUL_AVG[date.getMonth()] + (r(1) * 6 - 3));
+  const gap = 6 + Math.round(r(2) * 5);
+  const cond = r(3) < 0.5 ? "sun" : r(3) < 0.75 ? "cloud" : r(3) < 0.9 ? "wind" : "rain";
+  const band = temp >= 22 ? "hot" : temp >= 16 ? "mild" : temp >= 8 ? "cross" : "cold";
+  return { temp, low: temp - gap, high: temp + Math.round(gap / 3), cond, band };
+}
+
+const COND = {
+  sun:   { icon: "☀️", word: "맑음", note: "하늘은 맑을 예정이에요." },
+  cloud: { icon: "⛅", word: "구름 조금", note: "구름이 끼지만 비 소식은 없어요." },
+  wind:  { icon: "🌬️", word: "바람 강함", note: "바람이 꽤 불어 체감 온도는 더 낮을 거예요." },
+  rain:  { icon: "🌧️", word: "비 소식", note: "비 소식이 있어요. 스웨이드·밝은 바지는 피하는 게 좋아요." },
+};
+
+function renderDday() {
+  const date = new Date(state.when);
+  const d = dDiff(date);
+  const fc = forecastFor(date);
+  const c = COND[fc.cond];
+  const occ = OCCASION[state.situation];
+  const look = occ.data[fc.band];
+  const act = ACTIVITY[state.activity];
+
+  const eveningMsg = fc.temp - fc.low >= 8
+    ? `저녁엔 ${fc.low}°C까지 떨어져 쌀쌀할 예정이에요!`
+    : `밤까지 기온 변화가 크지 않아 편할 거예요.`;
+  const range = d > 10 ? " (장기 예보라 평년 기온 기준이에요)" : "";
+  const parts = ["상의", "하의", "아우터", "신발", "포인트"];
+
+  const shipping = d <= 2
+    ? "D-Day가 코앞이에요. 오늘 주문하면 내일 오는 빠른배송 상품 위주로 보세요."
+    : `D-${d}, 지금 주문하면 넉넉하게 도착해요. 미리 입어보고 교환할 시간도 있어요.`;
+
+  $("#result-dday").innerHTML = `
+    <article class="rx">
+      <div class="rx-top">
+        <div class="rx-meta"><span>D-${d} 예보 분석</span><span>${fmtDate(date)}</span></div>
+        <div class="rx-title">${occ.word} 처방전</div>
+        <div class="rx-tags">
+          <span class="rx-tag">${occ.label}</span><span class="rx-tag">${act.label}</span><span class="rx-tag">${c.icon} ${c.word}</span>
+        </div>
+      </div>
+      <div class="rx-body">
+        <div class="forecast">
+          <div class="fc-icon">${c.icon}</div>
+          <div>
+            <div class="fc-temp">${fc.temp}°C<span>최저 ${fc.low}° / 최고 ${fc.high}°</span></div>
+            <div class="fc-msg">해당 날짜 예상 기온 ${fc.temp}°C, ${eveningMsg} ${c.note}${range}</div>
+          </div>
+        </div>
+        <div class="rx-section-label">${occ.word} 공식</div>
+        <ul class="formula">
+          ${look.f.map((v, i) => `<li><span class="part">${parts[i]}</span><span class="item ${v === NO ? "none" : ""}">${v}</span></li>`).join("")}
+        </ul>
+        <div class="tip"><span class="ico">📍</span><div><b>${act.label} 팁</b>${act.tip}</div></div>
+        ${state.situation === "wedding" ? `<div class="tip soft"><span class="ico">💐</span><div><b>하객 매너</b>올화이트·아이보리 원피스는 신부와 겹쳐요. 너무 화려한 레드·블랙 올착장도 피해 주세요.</div></div>` : ""}
+        ${state.situation === "interview" ? `<div class="tip soft"><span class="ico">🧾</span><div><b>면접 체크</b>전날 셔츠 다림질, 구두 광택, 손톱 정리까지 확인하면 완벽해요.</div></div>` : ""}
+      </div>
+      <section class="shop">
+        <h3>옷장에 이 조합이 없다면? D-Day 전 도착 추천템</h3>
+        <p class="sub">${shipping}</p>
+        <div class="shop-list">
+          ${look.shop.map((s) => `
+            <div class="shop-card">
+              <div class="thumb">${s.emoji}</div>
+              <div>
+                <div class="shop-name">${s.n}</div>
+                <div class="shop-why">${s.why}</div>
+                <div class="shop-price">예상 ${s.price}</div>
+              </div>
+              <button class="shop-btn" data-item="${s.n}">무신사/지그재그에서 최저가 보기</button>
+            </div>`).join("")}
+        </div>
+      </section>
+    </article>`;
+
+  $$(".shop-btn").forEach((b) => b.addEventListener("click", () => openMall(b.dataset.item)));
+}
+
+$("#btn-dday").addEventListener("click", (e) => {
+  withLoading(e.currentTarget, "그날 예보 분석 중...", () => {
+    renderDday();
+    $("#result-dday").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
+
+/* ---------- 모의 쇼핑몰 이동 ---------- */
+let currentItem = "";
+function openMall(item) {
+  currentItem = item;
+  $("#sheet-desc").textContent = `'${item}' 최저가를 어디서 찾아볼까요? 선택하면 쇼핑몰 검색 결과로 이동해요.`;
+  $("#modal").classList.add("show");
+}
+function closeMall() { $("#modal").classList.remove("show"); }
+$("#sheet-close").onclick = closeMall;
+$("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeMall(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMall(); });
+$$(".mall").forEach((m) => m.addEventListener("click", () => {
+  closeMall();
+  toast(`🛍️ ${m.dataset.mall}에서 '${currentItem}' 검색 중... (프로토타입이라 이동은 생략)`);
+}));
+
+/* ---------- 클립보드 (파일로 열어도 동작하도록 대체 방식 포함) ---------- */
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+  }
+  return Promise.resolve(fallbackCopy(text));
+}
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); } catch (e) {}
+  ta.remove();
+}
+
+updateButtons();
+</script>
+</body>
+</html>
