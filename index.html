@@ -149,13 +149,28 @@
   }
   .chip.wide { flex: 1 1 100%; }
 
-  .date-input {
-    display: none; margin-top: 10px; width: 100%;
-    padding: 12px 14px; border-radius: 14px;
-    border: 1.5px solid var(--navy); font: inherit; font-size: 15px; color: var(--navy);
-    background: var(--sky);
+  .date-field {
+    position: relative; display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; border-radius: 18px;
+    border: 1.5px solid var(--line); background: #fff; cursor: pointer;
+    transition: border-color .2s, background .2s;
   }
-  .date-input.show { display: block; animation: panelIn .3s var(--ease); }
+  .date-field:hover { border-color: var(--sky-2); }
+  .date-field.filled { border-color: var(--navy); background: var(--sky); }
+  .date-field .cal { font-size: 24px; }
+  .date-field .txt { flex: 1; }
+  .date-field .main { font-size: 16px; font-weight: 700; }
+  .date-field .sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .date-field .dday {
+    font-size: 13px; font-weight: 800; color: #fff; background: var(--navy);
+    padding: 6px 11px; border-radius: 999px; display: none;
+  }
+  .date-field.filled .dday { display: inline-block; animation: panelIn .3s var(--ease); }
+  .date-input {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    opacity: 0; cursor: pointer; border: 0; font: inherit;
+  }
+  .date-input::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; }
 
   /* ---------- CTA ---------- */
   .cta {
@@ -417,8 +432,15 @@
     <div class="card">
       <div class="step" data-step="when">
         <div class="step-head"><div class="step-num">1</div><div class="step-title">언제 만나나요?</div></div>
-        <div class="chips" data-group="when" id="when-chips"></div>
-        <input type="date" class="date-input" id="custom-date" aria-label="날짜 직접 선택" />
+        <label class="date-field" id="date-field">
+          <span class="cal">📅</span>
+          <span class="txt">
+            <span class="main" id="date-main">날짜를 선택해 주세요</span>
+            <span class="sub" id="date-sub">데이트, 기념일, 면접 등 약속 날짜</span>
+          </span>
+          <span class="dday" id="date-dday"></span>
+          <input type="date" class="date-input" id="custom-date" aria-label="약속 날짜 선택" />
+        </label>
       </div>
 
       <div class="step" data-step="situation">
@@ -448,7 +470,7 @@
     <div class="result" id="result-dday"></div>
   </section>
 
-  <p class="footer-note">프로토타입 · 날씨와 쇼핑 연결은 시뮬레이션이에요</p>
+  <p class="footer-note">날씨는 시뮬레이션이에요 · 쇼핑 버튼은 실제 검색 결과로 이동해요</p>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -760,24 +782,34 @@ $$(".tab-btn").forEach((btn) => btn.addEventListener("click", () => {
   $$(".panel").forEach((p) => p.classList.toggle("active", p.id === `panel-${i}`));
 }));
 
-/* ---------- Tab 2 date chips (오늘 기준 자동 계산) ---------- */
-(function buildWhenChips() {
-  const today = startOfDay(new Date());
-  const toSat = (6 - today.getDay() + 7) % 7 || 7;
-  const thisSat = new Date(today); thisSat.setDate(today.getDate() + toSat);
-  const nextSat = new Date(thisSat); nextSat.setDate(thisSat.getDate() + 7);
-  const opts = [
-    { v: thisSat.toISOString(), t: `이번 주 토요일 (D-${dDiff(thisSat)})`, s: fmtDate(thisSat) },
-    { v: nextSat.toISOString(), t: `다음 주 주말 (D-${dDiff(nextSat)})`, s: fmtDate(nextSat) },
-    { v: "custom", t: "🎉 기념일/특별한 날", s: "날짜 직접 고르기" },
-  ];
-  $("#when-chips").innerHTML = opts.map((o) =>
-    `<button class="chip" data-value="${o.v}">${o.t}<small>${o.s}</small></button>`).join("");
+/* ---------- Tab 2 날짜 선택 ---------- */
+const dLabel = (d) => (d === 0 ? "D-Day" : `D-${d}`);
+(function setupDatePicker() {
   const input = $("#custom-date");
-  const min = new Date(today); min.setDate(min.getDate() + 1);
-  input.min = min.toISOString().slice(0, 10);
+  const today = startOfDay(new Date());
+  const toISO = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  input.min = toISO(today);
+  const max = new Date(today); max.setFullYear(max.getFullYear() + 1);
+  input.max = toISO(max);
+
   input.addEventListener("change", () => {
-    state.when = input.value ? new Date(input.value + "T00:00:00").toISOString() : null;
+    const field = $("#date-field");
+    if (!input.value) {
+      state.when = null;
+      field.classList.remove("filled");
+      $("#date-main").textContent = "날짜를 선택해 주세요";
+      $("#date-sub").textContent = "데이트, 기념일, 면접 등 약속 날짜";
+      field.closest(".step").classList.remove("done");
+    } else {
+      const d = new Date(input.value + "T00:00:00");
+      const diff = dDiff(d);
+      state.when = d.toISOString();
+      field.classList.add("filled");
+      $("#date-main").textContent = fmtDate(d);
+      $("#date-sub").textContent = diff === 0 ? "바로 오늘이에요!" : `${diff}일 남았어요`;
+      $("#date-dday").textContent = dLabel(diff);
+      field.closest(".step").classList.add("done");
+    }
     updateButtons();
   });
 })();
@@ -790,19 +822,7 @@ document.addEventListener("click", (e) => {
   $$(".chip", chip.parentElement).forEach((c) => c.classList.toggle("selected", c === chip));
   const v = chip.dataset.value;
 
-  if (group === "when") {
-    const input = $("#custom-date");
-    if (v === "custom") {
-      input.classList.add("show");
-      state.when = input.value ? new Date(input.value + "T00:00:00").toISOString() : null;
-      if (!input.value) setTimeout(() => input.showPicker?.(), 50);
-    } else {
-      input.classList.remove("show");
-      state.when = v;
-    }
-  } else {
-    state[group] = group === "mood" ? Number(v) : v;
-  }
+  state[group] = group === "mood" ? Number(v) : v;
   chip.closest(".step")?.classList.add("done");
   updateButtons();
 });
@@ -931,14 +951,16 @@ function renderDday() {
   const range = d > 10 ? " (장기 예보라 평년 기온 기준이에요)" : "";
   const parts = ["상의", "하의", "아우터", "신발", "포인트"];
 
-  const shipping = d <= 2
+  const shipping = d === 0
+    ? "오늘이 D-Day예요! 배송은 늦으니 옷장 속 비슷한 아이템으로 대체해 보세요."
+    : d <= 2
     ? "D-Day가 코앞이에요. 오늘 주문하면 내일 오는 빠른배송 상품 위주로 보세요."
     : `D-${d}, 지금 주문하면 넉넉하게 도착해요. 미리 입어보고 교환할 시간도 있어요.`;
 
   $("#result-dday").innerHTML = `
     <article class="rx">
       <div class="rx-top">
-        <div class="rx-meta"><span>D-${d} 예보 분석</span><span>${fmtDate(date)}</span></div>
+        <div class="rx-meta"><span>${dLabel(d)} 예보 분석</span><span>${fmtDate(date)}</span></div>
         <div class="rx-title">${occ.word} 처방전</div>
         <div class="rx-tags">
           <span class="rx-tag">${occ.label}</span><span class="rx-tag">${act.label}</span><span class="rx-tag">${c.icon} ${c.word}</span>
@@ -992,16 +1014,29 @@ $("#btn-dday").addEventListener("click", (e) => {
 let currentItem = "";
 function openMall(item) {
   currentItem = item;
-  $("#sheet-desc").textContent = `'${item}' 최저가를 어디서 찾아볼까요? 선택하면 쇼핑몰 검색 결과로 이동해요.`;
+  $("#sheet-desc").textContent = `'${searchKeyword(item)}' 검색 결과를 새 창으로 열어요. 어디서 볼까요?`;
   $("#modal").classList.add("show");
 }
 function closeMall() { $("#modal").classList.remove("show"); }
 $("#sheet-close").onclick = closeMall;
 $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeMall(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMall(); });
+const MALL_URL = {
+  "무신사": (q) => `https://www.musinsa.com/search/goods?keyword=${encodeURIComponent(q)}`,
+  "지그재그": (q) => `https://zigzag.kr/search?keyword=${encodeURIComponent(q)}`,
+};
+// "하늘색 셔츠 or 블라우스", "화이트 셔츠 2장" 같은 이름을 검색하기 좋은 키워드로 정리
+function searchKeyword(name) {
+  return name.split(" or ")[0].replace(/\(.*?\)/g, "").replace(/\d+장/g, "").replace(/\s+/g, " ").trim();
+}
 $$(".mall").forEach((m) => m.addEventListener("click", () => {
+  const q = searchKeyword(currentItem);
+  const win = window.open(MALL_URL[m.dataset.mall](q), "_blank");
+  if (win) win.opener = null; // 보안: 새 창이 이 페이지를 조작하지 못하게
   closeMall();
-  toast(`🛍️ ${m.dataset.mall}에서 '${currentItem}' 검색 중... (프로토타입이라 이동은 생략)`);
+  toast(win === null
+    ? "팝업이 차단됐어요. 브라우저 주소창 옆에서 팝업을 허용해 주세요"
+    : `🛍️ ${m.dataset.mall}에서 '${q}' 검색 결과를 열었어요`);
 }));
 
 /* ---------- 클립보드 (파일로 열어도 동작하도록 대체 방식 포함) ---------- */
